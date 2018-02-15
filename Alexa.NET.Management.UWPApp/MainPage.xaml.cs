@@ -19,7 +19,7 @@ namespace Alexa.NET.Management.UWPApp
     public sealed partial class MainPage : Page
     {
         private ManagementApi Api { get; set; }
-        private SkillSummary CurrentSkill { get; set; }
+        public SkillSummary CurrentSkill { get; set; }
 
         public MainPage()
         {
@@ -72,7 +72,7 @@ namespace Alexa.NET.Management.UWPApp
             var textview = new TextBlock {Text = JObject.FromObject(skill.Manifest).ToString(Formatting.Indented)};
             output.Content = textview;
 
-            SkillNav.Content = output;
+            InfoTab.Content = output;
         }
     }
 }

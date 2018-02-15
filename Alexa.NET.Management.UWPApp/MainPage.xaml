@@ -5,9 +5,53 @@
     xmlns:local="using:Alexa.NET.Management.UWPApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:utility="using:Alexa.NET.Management.UWPApp.Utility"
     mc:Ignorable="d">
-
+    <Page.Resources>
+        <utility:SkillItemTitleConverter x:Key="TitleConverter"/>
+    </Page.Resources>
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+        <NavigationView x:Name="SkillNav" SelectionChanged="SkillNav_OnSelectionChanged" IsSettingsVisible="false" OpenPaneLength="280" CompactModeThresholdWidth="560" ExpandedModeThresholdWidth="560">
+            <NavigationView.AutoSuggestBox>
+                <AutoSuggestBox Visibility="Collapsed"></AutoSuggestBox>
+            </NavigationView.AutoSuggestBox>
+            <NavigationView.HeaderTemplate>
+                <DataTemplate>
+                    <Grid Margin="24,10,0,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Style="{StaticResource TitleTextBlockStyle}"
+                                   FontSize="28"
+                                   VerticalAlignment="Center"
+                                   Text="{Binding ElementName=SkillNav,Path=SelectedItem, Converter={StaticResource TitleConverter},Mode=OneWay}"/>
+                        <CommandBar Grid.Column="1"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Top"
+                                    DefaultLabelPosition="Right"
+                                    Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
+                            <AppBarButton Label="Refresh" Icon="Refresh"/>
+                            <AppBarButton Label="Send" Icon="Send"/>
+                        </CommandBar>
+                    </Grid>
+                </DataTemplate>
+            </NavigationView.HeaderTemplate>
+            <NavigationView.PaneFooter>
+                <HyperlinkButton x:Name="VendorName" Margin="12,0"/>
+            </NavigationView.PaneFooter>
+            <NavigationView.MenuItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Converter={StaticResource TitleConverter}}"/>
+                </DataTemplate>
+            </NavigationView.MenuItemTemplate>
+            <Frame x:Name="ContentFrame" Margin="24">
+                <Frame.ContentTransitions>
+                    <TransitionCollection>
+                        <NavigationThemeTransition/>
+                    </TransitionCollection>
+                </Frame.ContentTransitions>
+            </Frame>
+        </NavigationView>
     </Grid>
 </Page>

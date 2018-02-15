@@ -4,5 +4,8 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:Alexa.NET.Management.UWPApp"
     RequestedTheme="Light">
-
+<Application.Resources>
+        <x:String x:Key="ClientId">amzn1.application-oa2-client.f9fed776d1e14e65933cc5d779b4fb8b</x:String>
+        <x:String x:Key="ClientSecret">544fb43942f715e54ba8f6486def55c7861ba5f0ffa5e02ec1617aea367094ec</x:String>
+    </Application.Resources>
 </Application>

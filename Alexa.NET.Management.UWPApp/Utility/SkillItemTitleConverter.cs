@@ -15,12 +15,12 @@ namespace Alexa.NET.Management.UWPApp.Utility
 
         public object Convert(object value, Type targetType, object parameter, string language)
         {
-            if (!(value is SkillSummary))
+            if (!(value is SkillSummary skill))
             {
                 return "[No Skill Selected]";
             }
 
-            return ((SkillSummary) value).NameByLocale[Locale];
+            return $"{skill.NameByLocale[Locale]} [{skill.Stage}]";
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

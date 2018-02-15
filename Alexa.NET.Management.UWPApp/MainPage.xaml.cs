@@ -6,6 +6,7 @@ using Alexa.NET.Management.Api;
 using Alexa.NET.Management.Skills;
 using Alexa.NET.Management.UWPApp.Utility;
 using Alexa.NET.Management.Vendors;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -52,15 +53,26 @@ namespace Alexa.NET.Management.UWPApp
 
         private void SetVendor(Vendor vendor)
         {
-            VendorName.Content = vendor.Name;
+            VendorName.Content = $"Vendor: {vendor.Name}";
             VendorName.Tag = vendor.Id;
         }
 
-        public string SkillTitle => CurrentSkill?.NameByLocale[Locale] ?? "[No Skill Selected]";
-
-        private void SkillNav_OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        private async void SkillNav_OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            var s
+            if (!(args.SelectedItem is SkillSummary summary))
+            {
+                SkillNav.Content = null;
+                return;
+            }
+
+            var skill = await Api.Skills.Get(summary.SkillId, summary.Stage.ToString().ToLower());
+
+            var output = new ScrollViewer();
+
+            var textview = new TextBlock {Text = JObject.FromObject(skill.Manifest).ToString(Formatting.Indented)};
+            output.Content = textview;
+
+            SkillNav.Content = output;
         }
     }
 }

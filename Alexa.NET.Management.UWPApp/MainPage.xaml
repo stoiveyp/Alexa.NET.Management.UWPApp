@@ -31,8 +31,8 @@
                                     VerticalAlignment="Top"
                                     DefaultLabelPosition="Right"
                                     Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
-                            <AppBarButton Label="Refresh" Icon="Refresh"/>
-                            <AppBarButton Label="Send" Icon="Send"/>
+                            <AppBarButton Label="Refresh" Icon="Refresh" Click="RefreshSkill"/>
+                            <AppBarButton Label="Update" Icon="Upload" Click="UpdateSkill"/>
                         </CommandBar>
                     </Grid>
                 </DataTemplate>
@@ -45,7 +45,7 @@
                     <TextBlock Text="{Binding Converter={StaticResource TitleConverter}}"/>
                 </DataTemplate>
             </NavigationView.MenuItemTemplate>
-            <Pivot DataContext="{Binding CurrentSkill}" Margin="12 0 12 0">
+            <Pivot x:Name="SkillView" DataContext="{Binding CurrentSkill}" Margin="12 0 12 0">
                 <PivotItem Header="Info" x:Name="InfoTab"/>
                 <PivotItem Header="Apis" />
                 <PivotItem Header="Compliance" />

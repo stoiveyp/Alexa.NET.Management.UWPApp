@@ -61,7 +61,12 @@ namespace Alexa.NET.Management.UWPApp
         private async Task GetAndSetSkills(string vendorId)
         {
             var skillList = await Api.Skills.List(vendorId);
-            SkillNav.MenuItemsSource = skillList.Skills.OrderBy(s => s.NameByLocale[SkillItemTitleConverter.Locale]).ThenBy(s => s.Stage.ToString());
+            SkillNav.MenuItemsSource = skillList.Skills.OrderBy(LocaleOrFirst).ThenBy(s => s.Stage.ToString());
+        }
+
+        private string LocaleOrFirst(SkillSummary skillSummary)
+        {
+            return skillSummary.NameByLocale.ContainsKey(SkillItemTitleConverter.Locale) ? skillSummary.NameByLocale[SkillItemTitleConverter.Locale] : skillSummary.NameByLocale.First().Value;
         }
 
         private void SetVendor(Vendor vendor)

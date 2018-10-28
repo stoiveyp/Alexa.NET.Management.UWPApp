@@ -61,12 +61,7 @@ namespace Alexa.NET.Management.UWPApp
         private async Task GetAndSetSkills(string vendorId)
         {
             var skillList = await Api.Skills.List(vendorId);
-            SkillNav.MenuItemsSource = skillList.Skills.OrderBy(LocaleOrFirst).ThenBy(s => s.Stage.ToString());
-        }
-
-        private string LocaleOrFirst(SkillSummary skillSummary)
-        {
-            return skillSummary.NameByLocale.ContainsKey(SkillItemTitleConverter.Locale) ? skillSummary.NameByLocale[SkillItemTitleConverter.Locale] : skillSummary.NameByLocale.First().Value;
+            SkillNav.MenuItemsSource = skillList.Skills.GroupBy(s => s.SkillId).Select(g => new SkillSet(g));
         }
 
         private void SetVendor(Vendor vendor)
@@ -77,71 +72,42 @@ namespace Alexa.NET.Management.UWPApp
 
         private async void SkillNav_OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
         {
-            await SetSkill(args.SelectedItem as SkillSummary);
+            var skillSet = args.SelectedItem as SkillSet;
+            StageSwitch.IsOn = false;
+            StageSwitch.IsEnabled = skillSet.Summaries.Length > 1;
+            await SetSkill(skillSet);
         }
 
-        private async void RefreshSkill(object sender, RoutedEventArgs e)
+        private async Task SetSkill(SkillSet summary)
         {
-            await SetSkill(SkillNav.SelectedItem as SkillSummary);
+
+            //var skill = await Api.Skills.Get(summary.SkillId, summary.CurrentStage);
+            //CurrentSkill = skill;
+            //var output = new ScrollViewer();
+
+            //var textview = new TextBox {AcceptsReturn = true,TextWrapping = TextWrapping.Wrap};
+            //output.Content = textview;
+
+            //var osb = new StringBuilder();
+            //using (var textWriter = new JsonTextWriter(new StringWriter(osb)))
+            //{
+            //    Serializer.Serialize(textWriter, skill);
+            //}
+
+            //textview.Text = osb.ToString();
+
+            //InfoTab.Content = output;
         }
 
-        public async void UpdateSkill(object sender, RoutedEventArgs e)
+        private void StageSwitch_OnToggled(object sender, RoutedEventArgs e)
         {
-            if (!(SkillNav.SelectedItem is SkillSummary summary))
+            var currentSet = SkillNav.SelectedItem as SkillSet;
+            if (!currentSet.UpdateStage(StageSwitch.IsOn
+                ? StageSwitch.OnContent.ToString()
+                : StageSwitch.OffContent.ToString()))
             {
-                return;
+                StageSwitch.IsOn = !StageSwitch.IsOn;
             }
-
-            if (summary.Stage == SkillStage.LIVE)
-            {
-                var dialog = new MessageDialog("This will update the development version of this skill, is this okay?",
-                    "Unable to edit live skill");
-
-                var result = false;
-                dialog.Commands.Add(new UICommand("OK",a => result = true));
-                dialog.Commands.Add(new UICommand("Cancel",a=>result = false));
-                await dialog.ShowAsync().AsTask();
-                if (!result)
-                {
-                    return;
-                }
-            }
-
-            var text = ((ScrollViewer) InfoTab.Content).Content as TextBox;
-            Skill skill;
-            using (var reader = new JsonTextReader(new StringReader(text.Text)))
-            {
-                skill = Serializer.Deserialize<Skill>(reader);
-            }
-
-            try
-            {
-                await Api.Skills.Update(summary.SkillId, SkillStage.DEVELOPMENT.ToString(),skill);
-                await SetSkill(summary);
-            }
-            catch (Exception)
-            {
-            }
-        }
-
-        private async Task SetSkill(SkillSummary summary)
-        {
-            var skill = await Api.Skills.Get(summary.SkillId, summary.Stage.ToString().ToLower());
-            CurrentSkill = skill;
-            var output = new ScrollViewer();
-
-            var textview = new TextBox {AcceptsReturn = true,TextWrapping = TextWrapping.Wrap};
-            output.Content = textview;
-
-            var osb = new StringBuilder();
-            using (var textWriter = new JsonTextWriter(new StringWriter(osb)))
-            {
-                Serializer.Serialize(textWriter, skill);
-            }
-
-            textview.Text = osb.ToString();
-
-            InfoTab.Content = output;
         }
     }
 }

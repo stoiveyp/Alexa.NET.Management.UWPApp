@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -58,10 +59,17 @@ namespace Alexa.NET.Management.UWPApp
             await GetAndSetSkills(firstVendor.Id);
         }
 
+        private ObservableCollection<SkillSet> Skills = new ObservableCollection<SkillSet>();
+
         private async Task GetAndSetSkills(string vendorId)
         {
+            SkillNav.MenuItemsSource = Skills;
             var skillList = await Api.Skills.List(vendorId);
-            SkillNav.MenuItemsSource = skillList.Skills.GroupBy(s => s.SkillId).Select(g => new SkillSet(g));
+            var skillSets = skillList.Skills.GroupBy(s => s.SkillId).Select(g => new SkillSet(g));
+            foreach (var item in skillSets)
+            {
+                Skills.Add(item);
+            }
         }
 
         private void SetVendor(Vendor vendor)

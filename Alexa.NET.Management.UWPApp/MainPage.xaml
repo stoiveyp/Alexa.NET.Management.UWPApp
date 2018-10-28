@@ -6,36 +6,40 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:utility="using:Alexa.NET.Management.UWPApp.Utility"
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d">
     <Page.Resources>
         <utility:SkillItemTitleConverter x:Key="TitleConverter"/>
     </Page.Resources>
-
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
-        <NavigationView 
-            x:Name="SkillNav" 
-            SelectionChanged="SkillNav_OnSelectionChanged"
-            IsSettingsVisible="false"
-            PaneDisplayMode="Top"
-            OverflowLabelMode="NoLabel">
-            <NavigationView.PaneCustomContent>
-                <ToggleSwitch Toggled="StageSwitch_OnToggled" x:Name="StageSwitch" OffContent="Development" OnContent="Live"></ToggleSwitch>
-            </NavigationView.PaneCustomContent>
-            <NavigationView.PaneFooter>
-                <HyperlinkButton x:Name="VendorName" Margin="12,0"/>
-            </NavigationView.PaneFooter>
-            <NavigationView.MenuItemTemplate>
-                <DataTemplate>
+    <toolkit:MasterDetailsView x:Name="MasterDetails" MasterPaneWidth="360">
+        <toolkit:MasterDetailsView.NoSelectionContentTemplate>
+            <DataTemplate>
+                <StackPanel HorizontalAlignment="Center" 
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Select a Skill" 
+                               FontSize="24" 
+                               Margin="0,12"/>
+                </StackPanel>
+            </DataTemplate>
+        </toolkit:MasterDetailsView.NoSelectionContentTemplate>
+        <toolkit:MasterDetailsView.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Margin="12">
                     <TextBlock Text="{Binding Converter={StaticResource TitleConverter}}"/>
-                </DataTemplate>
-            </NavigationView.MenuItemTemplate>
-            <Pivot x:Name="SkillView" DataContext="{Binding CurrentSkill}" Margin="12 0 12 0">
-                <PivotItem Header="Info" x:Name="InfoTab"/>
-                <PivotItem Header="Apis" />
-                <PivotItem Header="Compliance" />
-                <PivotItem Header="Events" />
-            </Pivot>
-        </NavigationView>
-    </Grid>
+                    <TextBlock Text="{Binding SkillId}" Style="{StaticResource CaptionTextBlockStyle}"/>
+                </StackPanel>
+            </DataTemplate>
+        </toolkit:MasterDetailsView.ItemTemplate>
+        <toolkit:MasterDetailsView.DetailsTemplate>
+            <DataTemplate>
+                <StackPanel>
+                    <TextBlock Margin="12" Text="{Binding Converter={StaticResource TitleConverter}}" Style="{ThemeResource HeaderTextBlockStyle}"/>
+                    <Pivot>
+                        <PivotItem Header="Model"></PivotItem>
+                        <PivotItem Header="Beta"></PivotItem>
+                    </Pivot>
+                </StackPanel>
+            </DataTemplate>
+        </toolkit:MasterDetailsView.DetailsTemplate>
+    </toolkit:MasterDetailsView>
 </Page>

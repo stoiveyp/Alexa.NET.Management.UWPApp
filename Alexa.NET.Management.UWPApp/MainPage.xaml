@@ -26,20 +26,30 @@
             <DataTemplate>
                 <StackPanel Margin="12">
                     <TextBlock Text="{Binding Converter={StaticResource TitleConverter}}"/>
-                    <TextBlock Text="{Binding SkillId}" Style="{StaticResource CaptionTextBlockStyle}"/>
+                    <TextBlock Text="{Binding ApiTypes}" Style="{ThemeResource CaptionTextBlockStyle}"></TextBlock>
                 </StackPanel>
             </DataTemplate>
         </toolkit:MasterDetailsView.ItemTemplate>
         <toolkit:MasterDetailsView.DetailsTemplate>
             <DataTemplate>
                 <StackPanel>
-                    <TextBlock Margin="12" Text="{Binding Converter={StaticResource TitleConverter}}" Style="{ThemeResource HeaderTextBlockStyle}"/>
+                    <local:SkillHeader />
                     <Pivot>
-                        <PivotItem Header="Model"></PivotItem>
+                        <PivotItem Header="Overview"></PivotItem>
                         <PivotItem Header="Beta"></PivotItem>
+                        <PivotItem Header="Certification"></PivotItem>
+                        <PivotItem Header="Products"></PivotItem>
                     </Pivot>
                 </StackPanel>
             </DataTemplate>
         </toolkit:MasterDetailsView.DetailsTemplate>
+        <toolkit:MasterDetailsView.DetailsCommandBar>
+            <CommandBar>
+                <CommandBar.SecondaryCommands>
+                    <AppBarToggleButton Label="Stage" Content="Development"/>
+                </CommandBar.SecondaryCommands>
+            </CommandBar>
+        </toolkit:MasterDetailsView.DetailsCommandBar>
+
     </toolkit:MasterDetailsView>
 </Page>

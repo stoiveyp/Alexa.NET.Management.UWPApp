@@ -20,6 +20,7 @@ namespace Alexa.NET.Management.UWPApp
 
         public string CurrentStage { get; set; }
 
+        public string ApiTypes => string.Join(",", Summaries.SelectMany(s => s.Apis).Distinct());
         public bool UpdateStage(string stageName)
         {
             var newSummary = SummaryForStage(stageName);

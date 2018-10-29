@@ -1,0 +1,31 @@
+﻿<UserControl
+    x:Class="Alexa.NET.Management.UWPApp.SkillHeader"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:Alexa.NET.Management.UWPApp"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:utility="using:Alexa.NET.Management.UWPApp.Utility"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+    <UserControl.Resources>
+        <utility:SkillItemTitleConverter x:Key="TitleConverter"/>
+    </UserControl.Resources>
+    <Grid Margin="12">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="325"/>
+            <ColumnDefinition Width="16"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="20"/>
+        </Grid.RowDefinitions>
+        <TextBlock Text="{Binding Converter={StaticResource TitleConverter}}" Style="{ThemeResource HeaderTextBlockStyle}" Grid.ColumnSpan="3"/>
+        <TextBlock Text="{Binding SkillId}" Style="{ThemeResource CaptionTextBlockStyle}" Grid.Column="0"  Grid.Row="1"></TextBlock>
+        <Viewbox MaxHeight="16" MaxWidth="16" Grid.Column="1" Grid.Row="1">
+        <SymbolIcon Symbol="Copy" ></SymbolIcon>
+        </Viewbox>
+    </Grid>
+</UserControl>

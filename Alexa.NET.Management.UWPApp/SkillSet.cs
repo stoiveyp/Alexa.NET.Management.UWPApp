@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Alexa.NET.Management.Api;
 using Alexa.NET.Management.Skills;
 using Alexa.NET.Management.UWPApp.Annotations;
 
@@ -15,6 +16,8 @@ namespace Alexa.NET.Management.UWPApp
         public SkillSummary[] Summaries { get; }
 
         public SkillSummary ActiveSummary => SummaryForStage(CurrentStage);
+
+        public bool HasLiveStage => Summaries.Any(s => s.Stage == SkillStage.LIVE);
 
         public string SkillId { get; set; }
 

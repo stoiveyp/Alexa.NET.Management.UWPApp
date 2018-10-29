@@ -29,6 +29,15 @@ namespace Alexa.NET.Management.UWPApp
 
         private ObservableCollection<SkillSet> Skills { get; }
 
+        public static readonly DependencyProperty CurrentSkillSetProperty = DependencyProperty.Register(
+            "CurrentSkillSet", typeof(SkillSet), typeof(MainPage), new PropertyMetadata(default(SkillSet)));
+
+        public SkillSet CurrentSkillSet
+        {
+            get => (SkillSet) GetValue(CurrentSkillSetProperty);
+            set => SetValue(CurrentSkillSetProperty, value);
+        }
+
         public MainPage()
         {
             SkillItemTitleConverter.Locale = "en-GB";
@@ -68,48 +77,24 @@ namespace Alexa.NET.Management.UWPApp
 
         private void SetVendor(Vendor vendor)
         {
-           // VendorName.Content = $"Vendor: {vendor.Name}";
-            //VendorName.Tag = vendor.Id;
+            VendorName.Content = $"Vendor: {vendor.Name}";
+            VendorName.Tag = vendor.Id;
         }
 
-        private async void SkillNav_OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        private void MasterDetails_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var skillSet = args.SelectedItem as SkillSet;
-            //StageSwitch.IsOn = false;
-            //StageSwitch.IsEnabled = skillSet.Summaries.Length > 1;
-            await SetSkill(skillSet);
+            if (e.AddedItems.Any())
+            {
+                CurrentSkillSet = e.AddedItems.Cast<SkillSet>().First();
+            }
         }
 
-        private async Task SetSkill(SkillSet summary)
-        {
-
-            //var skill = await Api.Skills.Get(summary.SkillId, summary.CurrentStage);
-            //CurrentSkill = skill;
-            //var output = new ScrollViewer();
-
-            //var textview = new TextBox {AcceptsReturn = true,TextWrapping = TextWrapping.Wrap};
-            //output.Content = textview;
-
-            //var osb = new StringBuilder();
-            //using (var textWriter = new JsonTextWriter(new StringWriter(osb)))
-            //{
-            //    Serializer.Serialize(textWriter, skill);
-            //}
-
-            //textview.Text = osb.ToString();
-
-            //InfoTab.Content = output;
-        }
-
-        private void StageSwitch_OnToggled(object sender, RoutedEventArgs e)
-        {
-            
-            //if (!currentSet.UpdateStage(StageSwitch.IsOn
-            //    ? StageSwitch.OnContent.ToString()
-            //    : StageSwitch.OffContent.ToString()))
-            //{
-            //    StageSwitch.IsOn = !StageSwitch.IsOn;
-            //}
-        }
+        //var skill = await Api.Skills.Get(summary.SkillId, summary.CurrentStage);
+        //if (!currentSet.UpdateStage(StageSwitch.IsOn
+        //    ? StageSwitch.OnContent.ToString()
+        //    : StageSwitch.OffContent.ToString()))
+        //{
+        //    StageSwitch.IsOn = !StageSwitch.IsOn;
+        //}
     }
 }

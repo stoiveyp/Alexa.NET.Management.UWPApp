@@ -106,6 +106,9 @@
       <DependentUpon>SkillHeader.xaml</DependentUpon>
     </Compile>
     <Compile Include="SkillSet.cs" />
+    <Compile Include="StageOverview.xaml.cs">
+      <DependentUpon>StageOverview.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Utility\SkillItemTitleConverter.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -173,6 +176,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="SkillHeader.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="StageOverview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -6,51 +6,65 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:utility="using:Alexa.NET.Management.UWPApp.Utility"
+    xmlns:toolkit="using:Microsoft.Toolkit.Uwp.UI.Controls"
     mc:Ignorable="d">
     <Page.Resources>
         <utility:SkillItemTitleConverter x:Key="TitleConverter"/>
     </Page.Resources>
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <NavigationView x:Name="SkillNav" SelectionChanged="SkillNav_OnSelectionChanged" IsSettingsVisible="false" OpenPaneLength="280" CompactModeThresholdWidth="560" ExpandedModeThresholdWidth="560">
-            <NavigationView.AutoSuggestBox>
-                <AutoSuggestBox Visibility="Collapsed"></AutoSuggestBox>
-            </NavigationView.AutoSuggestBox>
-            <NavigationView.HeaderTemplate>
-                <DataTemplate>
-                    <Grid Margin="24,10,0,0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition/>
-                        </Grid.ColumnDefinitions>
-                        <TextBlock Style="{StaticResource TitleTextBlockStyle}"
-                                   FontSize="28"
-                                   VerticalAlignment="Center"
-                                   Text="{Binding ElementName=SkillNav,Path=SelectedItem, Converter={StaticResource TitleConverter},Mode=OneWay}"/>
-                        <CommandBar Grid.Column="1"
-                                    HorizontalAlignment="Right"
-                                    VerticalAlignment="Top"
-                                    DefaultLabelPosition="Right"
-                                    Background="{ThemeResource SystemControlBackgroundAltHighBrush}">
-                            <AppBarButton Label="Refresh" Icon="Refresh" Click="RefreshSkill"/>
-                            <AppBarButton Label="Update" Icon="Upload" Click="UpdateSkill"/>
-                        </CommandBar>
-                    </Grid>
-                </DataTemplate>
-            </NavigationView.HeaderTemplate>
-            <NavigationView.PaneFooter>
-                <HyperlinkButton x:Name="VendorName" Margin="12,0"/>
-            </NavigationView.PaneFooter>
-            <NavigationView.MenuItemTemplate>
-                <DataTemplate>
+    <toolkit:MasterDetailsView 
+        x:Name="MasterDetails" 
+        MasterPaneWidth="360" 
+        SelectionChanged="MasterDetails_OnSelectionChanged">
+        <toolkit:MasterDetailsView.NoSelectionContentTemplate>
+            <DataTemplate>
+                <StackPanel HorizontalAlignment="Center" 
+                            VerticalAlignment="Center">
+                    <TextBlock Text="Select a Skill" 
+                               FontSize="24" 
+                               Margin="0,12"/>
+                </StackPanel>
+            </DataTemplate>
+        </toolkit:MasterDetailsView.NoSelectionContentTemplate>
+        <toolkit:MasterDetailsView.ItemTemplate>
+            <DataTemplate>
+                <StackPanel Margin="12">
                     <TextBlock Text="{Binding Converter={StaticResource TitleConverter}}"/>
-                </DataTemplate>
-            </NavigationView.MenuItemTemplate>
-            <Pivot x:Name="SkillView" DataContext="{Binding CurrentSkill}" Margin="12 0 12 0">
-                <PivotItem Header="Info" x:Name="InfoTab"/>
-                <PivotItem Header="Apis" />
-                <PivotItem Header="Compliance" />
-                <PivotItem Header="Events" />
-            </Pivot>
-        </NavigationView>
-    </Grid>
+                    <TextBlock Text="{Binding ApiTypes}" Style="{ThemeResource CaptionTextBlockStyle}"></TextBlock>
+                </StackPanel>
+            </DataTemplate>
+        </toolkit:MasterDetailsView.ItemTemplate>
+        <toolkit:MasterDetailsView.DetailsTemplate>
+            <DataTemplate>
+                <StackPanel>
+                    <local:SkillHeader />
+                    <Pivot>
+                        <PivotItem Header="Overview">
+                            <local:StageOverview Margin="12" DataContext="{Binding ActiveSummary}"/>
+                        </PivotItem>
+                        <PivotItem Header="Model"></PivotItem>
+                        <PivotItem Header="Beta"></PivotItem>
+                        <PivotItem Header="Certification"></PivotItem>
+                        <PivotItem Header="Products"></PivotItem>
+                    </Pivot>
+                </StackPanel>
+            </DataTemplate>
+        </toolkit:MasterDetailsView.DetailsTemplate>
+        <toolkit:MasterDetailsView.MasterCommandBar>
+            <CommandBar>
+                <AppBarElementContainer>
+                    <HyperlinkButton Margin="4" x:Name="VendorName"></HyperlinkButton>
+                </AppBarElementContainer>
+            </CommandBar>
+        </toolkit:MasterDetailsView.MasterCommandBar>
+        <toolkit:MasterDetailsView.DetailsCommandBar>
+            <CommandBar>
+                <AppBarButton 
+                    IsEnabled="{x:Bind CurrentSkillSet.HasLiveStage,Mode=OneWay}" 
+                    Click="{x:Bind CurrentSkillSet.SwitchStage}"
+                    Label="Switch Stage" 
+                    Icon="Switch"/>
+            </CommandBar>
+        </toolkit:MasterDetailsView.DetailsCommandBar>
+
+    </toolkit:MasterDetailsView>
 </Page>

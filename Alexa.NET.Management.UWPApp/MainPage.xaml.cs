@@ -1,21 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-using Windows.UI.Notifications;
-using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Alexa.NET.Management.Api;
-using Alexa.NET.Management.Manifest;
 using Alexa.NET.Management.Skills;
 using Alexa.NET.Management.UWPApp.Utility;
 using Alexa.NET.Management.Vendors;
+using Microsoft.Toolkit.Uwp.UI.Controls;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -27,17 +21,30 @@ namespace Alexa.NET.Management.UWPApp
     public sealed partial class MainPage : Page
     {
         private ManagementApi Api { get; set; }
-        public Skill CurrentSkill { get; set; }
 
         private JsonSerializer Serializer { get; } = JsonSerializer.CreateDefault(new JsonSerializerSettings
         {
             Converters = new List<JsonConverter> { new Internals.ApiConverter() }
         });
 
+        private ObservableCollection<SkillSet> Skills { get; }
+
+        public static readonly DependencyProperty CurrentSkillSetProperty = DependencyProperty.Register(
+            "CurrentSkillSet", typeof(SkillSet), typeof(MainPage), new PropertyMetadata(default(SkillSet)));
+
+        public SkillSet CurrentSkillSet
+        {
+            get => (SkillSet) GetValue(CurrentSkillSetProperty);
+            set => SetValue(CurrentSkillSetProperty, value);
+        }
+
         public MainPage()
         {
             SkillItemTitleConverter.Locale = "en-GB";
+            Skills = new ObservableCollection<SkillSet>();
+
             this.InitializeComponent();
+            MasterDetails.ItemsSource = Skills;
         }
 
         protected override async void OnNavigatedTo(NavigationEventArgs e)
@@ -61,12 +68,11 @@ namespace Alexa.NET.Management.UWPApp
         private async Task GetAndSetSkills(string vendorId)
         {
             var skillList = await Api.Skills.List(vendorId);
-            SkillNav.MenuItemsSource = skillList.Skills.OrderBy(LocaleOrFirst).ThenBy(s => s.Stage.ToString());
-        }
-
-        private string LocaleOrFirst(SkillSummary skillSummary)
-        {
-            return skillSummary.NameByLocale.ContainsKey(SkillItemTitleConverter.Locale) ? skillSummary.NameByLocale[SkillItemTitleConverter.Locale] : skillSummary.NameByLocale.First().Value;
+            var skillSets = skillList.Skills.GroupBy(s => s.SkillId).Select(g => new SkillSet(g));
+            foreach (var item in skillSets)
+            {
+                Skills.Add(item);
+            }
         }
 
         private void SetVendor(Vendor vendor)
@@ -75,73 +81,20 @@ namespace Alexa.NET.Management.UWPApp
             VendorName.Tag = vendor.Id;
         }
 
-        private async void SkillNav_OnSelectionChanged(NavigationView sender, NavigationViewSelectionChangedEventArgs args)
+        private void MasterDetails_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            await SetSkill(args.SelectedItem as SkillSummary);
-        }
-
-        private async void RefreshSkill(object sender, RoutedEventArgs e)
-        {
-            await SetSkill(SkillNav.SelectedItem as SkillSummary);
-        }
-
-        public async void UpdateSkill(object sender, RoutedEventArgs e)
-        {
-            if (!(SkillNav.SelectedItem is SkillSummary summary))
+            if (e.AddedItems.Any())
             {
-                return;
-            }
-
-            if (summary.Stage == SkillStage.LIVE)
-            {
-                var dialog = new MessageDialog("This will update the development version of this skill, is this okay?",
-                    "Unable to edit live skill");
-
-                var result = false;
-                dialog.Commands.Add(new UICommand("OK",a => result = true));
-                dialog.Commands.Add(new UICommand("Cancel",a=>result = false));
-                await dialog.ShowAsync().AsTask();
-                if (!result)
-                {
-                    return;
-                }
-            }
-
-            var text = ((ScrollViewer) InfoTab.Content).Content as TextBox;
-            Skill skill;
-            using (var reader = new JsonTextReader(new StringReader(text.Text)))
-            {
-                skill = Serializer.Deserialize<Skill>(reader);
-            }
-
-            try
-            {
-                await Api.Skills.Update(summary.SkillId, SkillStage.DEVELOPMENT.ToString(),skill);
-                await SetSkill(summary);
-            }
-            catch (Exception)
-            {
+                CurrentSkillSet = e.AddedItems.Cast<SkillSet>().First();
             }
         }
 
-        private async Task SetSkill(SkillSummary summary)
-        {
-            var skill = await Api.Skills.Get(summary.SkillId, summary.Stage.ToString().ToLower());
-            CurrentSkill = skill;
-            var output = new ScrollViewer();
-
-            var textview = new TextBox {AcceptsReturn = true,TextWrapping = TextWrapping.Wrap};
-            output.Content = textview;
-
-            var osb = new StringBuilder();
-            using (var textWriter = new JsonTextWriter(new StringWriter(osb)))
-            {
-                Serializer.Serialize(textWriter, skill);
-            }
-
-            textview.Text = osb.ToString();
-
-            InfoTab.Content = output;
-        }
+        //var skill = await Api.Skills.Get(summary.SkillId, summary.CurrentStage);
+        //if (!currentSet.UpdateStage(StageSwitch.IsOn
+        //    ? StageSwitch.OnContent.ToString()
+        //    : StageSwitch.OffContent.ToString()))
+        //{
+        //    StageSwitch.IsOn = !StageSwitch.IsOn;
+        //}
     }
 }

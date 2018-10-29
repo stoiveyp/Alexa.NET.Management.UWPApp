@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml;
 using Alexa.NET.Management.Api;
 using Alexa.NET.Management.Skills;
 using Alexa.NET.Management.UWPApp.Annotations;
@@ -24,9 +25,9 @@ namespace Alexa.NET.Management.UWPApp
         public string CurrentStage { get; set; }
 
         public string ApiTypes => string.Join(",", Summaries.SelectMany(s => s.Apis).Distinct());
-        public bool UpdateStage(string stageName)
+        public bool UpdateStage(SkillStage stageName)
         {
-            var newSummary = SummaryForStage(stageName);
+            var newSummary = SummaryForStage(stageName.ToString());
 
             if (newSummary == null)
             {
@@ -38,16 +39,21 @@ namespace Alexa.NET.Management.UWPApp
                 return true;
             }
 
-            CurrentStage = stageName;
+            CurrentStage = stageName.ToString();
             OnPropertyChanged(nameof(ActiveSummary));
             return true;
+        }
+
+        public void SwitchStage(object sender, RoutedEventArgs e)
+        {
+            UpdateStage(CurrentStage == SkillStage.DEVELOPMENT.ToString() ? SkillStage.LIVE : SkillStage.DEVELOPMENT);
         }
 
         public SkillSet(IGrouping<string, SkillSummary> summaryById)
         {
             Summaries = summaryById.ToArray();
             SkillId = summaryById.First().SkillId;
-            CurrentStage = "DEVELOPMENT";
+            UpdateStage(SkillStage.DEVELOPMENT);
         }
 
         private SkillSummary SummaryForStage(string stage)

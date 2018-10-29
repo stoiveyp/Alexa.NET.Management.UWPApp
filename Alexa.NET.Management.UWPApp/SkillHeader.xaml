@@ -25,7 +25,9 @@
         <TextBlock Text="{Binding Converter={StaticResource TitleConverter}}" Style="{ThemeResource HeaderTextBlockStyle}" Grid.ColumnSpan="3"/>
         <TextBlock Text="{Binding SkillId}" Style="{ThemeResource CaptionTextBlockStyle}" Grid.Column="0"  Grid.Row="1"></TextBlock>
         <Viewbox MaxHeight="16" MaxWidth="16" Grid.Column="1" Grid.Row="1">
-        <SymbolIcon Symbol="Copy" ></SymbolIcon>
+            <Button Click="CopySkillId">
+                <SymbolIcon Symbol="Copy"></SymbolIcon>
+            </Button>
         </Viewbox>
     </Grid>
 </UserControl>

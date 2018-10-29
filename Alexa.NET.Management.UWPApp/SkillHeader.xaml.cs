@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -22,6 +23,16 @@ namespace Alexa.NET.Management.UWPApp
         public SkillHeader()
         {
             this.InitializeComponent();
+        }
+
+        private void CopySkillId(object sender, RoutedEventArgs e)
+        {
+            var skillSet = this.DataContext as SkillSet;
+
+            var package = new DataPackage();
+            package.SetText(skillSet.SkillId);
+
+            Clipboard.SetContent(package);
         }
     }
 }

@@ -13,7 +13,8 @@
     </Page.Resources>
     <toolkit:MasterDetailsView 
         x:Name="MasterDetails" 
-        MasterPaneWidth="360" SelectionChanged="MasterDetails_OnSelectionChanged">
+        MasterPaneWidth="360" 
+        SelectionChanged="MasterDetails_OnSelectionChanged">
         <toolkit:MasterDetailsView.NoSelectionContentTemplate>
             <DataTemplate>
                 <StackPanel HorizontalAlignment="Center" 
@@ -57,7 +58,11 @@
         </toolkit:MasterDetailsView.MasterCommandBar>
         <toolkit:MasterDetailsView.DetailsCommandBar>
             <CommandBar>
-                <AppBarButton DataContext="{Binding CurrentSkillSet}" IsEnabled="{Binding HasLiveStage}" Label="Switch Stage" Icon="Switch"/>
+                <AppBarButton 
+                    IsEnabled="{x:Bind CurrentSkillSet.HasLiveStage,Mode=OneWay}" 
+                    Click="{x:Bind CurrentSkillSet.SwitchStage}"
+                    Label="Switch Stage" 
+                    Icon="Switch"/>
             </CommandBar>
         </toolkit:MasterDetailsView.DetailsCommandBar>
 

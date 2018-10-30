@@ -107,6 +107,7 @@
     </Compile>
     <Compile Include="SkillSet.cs" />
     <Compile Include="SkillSetOverview.cs" />
+    <Compile Include="SkillSummaryViewModel.cs" />
     <Compile Include="StageOverview.xaml.cs">
       <DependentUpon>StageOverview.xaml</DependentUpon>
     </Compile>

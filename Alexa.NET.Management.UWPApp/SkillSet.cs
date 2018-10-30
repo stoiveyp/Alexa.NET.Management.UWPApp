@@ -20,42 +20,9 @@ namespace Alexa.NET.Management.UWPApp
 
         public SkillSummary[] Summaries { get; }
 
-        private SkillSummary _activeSummary;
-        public SkillSummary ActiveSummary
-        {
-            get { return _activeSummary;}
-            private set
-            {
-                if (_activeSummary != value)
-                {
-                    _activeSummary = value;
-                    OnPropertyChanged(nameof(ActiveSummary));
-                }
-            }
-        }
-
         public bool HasLiveStage => Summaries.Any(s => s.Stage == SkillStage.LIVE);
 
         public string ApiTypes => string.Join(",", Summaries.SelectMany(s => s.Apis).Distinct());
-
-        public async Task<bool> UpdateStage(SkillStage stage)
-        {
-            var newSummary = Summaries.FirstOrDefault(s => s.Stage == stage);
-
-            if (newSummary == null)
-            {
-                return false;
-            }
-
-            if (newSummary == ActiveSummary)
-            {
-                return true;
-            }
-
-            ActiveSummary = newSummary;
-            //DO STUFF
-            return true;
-        }
 
         public string GetTitle(string locale)
         {
@@ -75,6 +42,39 @@ namespace Alexa.NET.Management.UWPApp
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+        private SkillSummaryViewModel _activeSummary;
+        public SkillSummaryViewModel ActiveSummary
+        {
+            get { return _activeSummary; }
+            private set
+            {
+                if (_activeSummary != value)
+                {
+                    _activeSummary = value;
+                    OnPropertyChanged(nameof(ActiveSummary));
+                }
+            }
+        }
+
+        public async Task<bool> UpdateStage(SkillStage stage)
+        {
+            var newSummary = Summaries.FirstOrDefault(s => s.Stage == stage);
+
+            if (newSummary == null)
+            {
+                return false;
+            }
+
+            if (newSummary == ActiveSummary?.SkillSummary)
+            {
+                return true;
+            }
+
+            ActiveSummary = new SkillSummaryViewModel(newSummary);
+            //DO STUFF
+            return true;
         }
     }
 }

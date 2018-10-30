@@ -26,6 +26,11 @@ namespace Alexa.NET.Management.UWPApp.Utility
                 return SkillSet.GetTitle(new[] {summary},Locale);
             }
 
+            if (value is SkillSummaryViewModel model)
+            {
+                return model.GetTitle(Locale);
+            }
+
             return null;
         }
 

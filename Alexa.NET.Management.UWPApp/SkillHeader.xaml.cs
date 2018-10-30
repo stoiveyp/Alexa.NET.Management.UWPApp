@@ -28,7 +28,7 @@ namespace Alexa.NET.Management.UWPApp
 
         private void CopySkillId(object sender, RoutedEventArgs e)
         {
-            var toCopy = ((FrameworkElement)sender).Tag.ToString();
+            var toCopy = ((SkillSummaryViewModel)DataContext).SkillId;
 
             var package = new DataPackage();
             package.SetText(toCopy);

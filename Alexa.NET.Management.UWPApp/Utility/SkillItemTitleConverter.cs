@@ -16,7 +16,17 @@ namespace Alexa.NET.Management.UWPApp.Utility
         public object Convert(object value, Type targetType, object parameter, string language)
         {
 
-            return ((SkillSet) value).GetTitle(Locale);
+            if (value is SkillSet set)
+            {
+                return set.GetTitle(Locale);
+            }
+
+            if (value is SkillSummary summary)
+            {
+                return SkillSet.GetTitle(new[] {summary},Locale);
+            }
+
+            return null;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, string language)

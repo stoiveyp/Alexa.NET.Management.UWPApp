@@ -10,9 +10,13 @@
     d:DesignWidth="400">
 
     <StackPanel>
-<StackPanel Margin="8">
-    <TextBlock Text="Stage" />
-    <TextBlock Text="{Binding Stage}"></TextBlock>
-</StackPanel>
+        <StackPanel Margin="8">
+            <TextBlock Text="Stage" FontWeight="Bold" />
+            <TextBlock Text="{Binding Stage}"></TextBlock>
+        </StackPanel>
+        <StackPanel Margin="8">
+            <TextBlock Text="Export Package" FontWeight="Bold"/>
+            <HyperlinkButton Content="Request"/>
+        </StackPanel>
     </StackPanel>
 </UserControl>

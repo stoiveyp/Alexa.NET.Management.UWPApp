@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using Alexa.NET.Management.Api;
 using Alexa.NET.Management.Skills;
 using Alexa.NET.Management.UWPApp.Utility;
 using Alexa.NET.Management.Vendors;
@@ -81,20 +82,22 @@ namespace Alexa.NET.Management.UWPApp
             VendorName.Tag = vendor.Id;
         }
 
-        private void MasterDetails_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void MasterDetails_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Any())
+            if (!e.AddedItems.Any())
             {
-                CurrentSkillSet = e.AddedItems.Cast<SkillSet>().First();
+                return;
             }
+
+            var set = e.AddedItems.Cast<SkillSet>().First();
+            CurrentSkillSet = set;
+            await set.UpdateStage(SkillStage.DEVELOPMENT);
         }
 
-        //var skill = await Api.Skills.Get(summary.SkillId, summary.CurrentStage);
-        //if (!currentSet.UpdateStage(StageSwitch.IsOn
-        //    ? StageSwitch.OnContent.ToString()
-        //    : StageSwitch.OffContent.ToString()))
-        //{
-        //    StageSwitch.IsOn = !StageSwitch.IsOn;
-        //}
+        public async void SwitchStage(object sender, RoutedEventArgs e)
+        {
+            var newStage = CurrentSkillSet.ActiveSummary.Stage == SkillStage.DEVELOPMENT ? SkillStage.LIVE : SkillStage.DEVELOPMENT;
+            await CurrentSkillSet.UpdateStage(newStage);
+        }
     }
 }

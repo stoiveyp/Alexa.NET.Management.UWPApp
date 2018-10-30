@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using FrameworkElement = Windows.UI.Xaml.FrameworkElement;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -27,10 +28,10 @@ namespace Alexa.NET.Management.UWPApp
 
         private void CopySkillId(object sender, RoutedEventArgs e)
         {
-            var skillSet = this.DataContext as SkillSet;
+            var toCopy = ((FrameworkElement)sender).Tag.ToString();
 
             var package = new DataPackage();
-            package.SetText(skillSet.SkillId);
+            package.SetText(toCopy);
 
             Clipboard.SetContent(package);
         }

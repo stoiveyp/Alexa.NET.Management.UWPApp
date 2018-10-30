@@ -34,12 +34,12 @@
             </DataTemplate>
         </toolkit:MasterDetailsView.ItemTemplate>
         <toolkit:MasterDetailsView.DetailsTemplate>
-            <DataTemplate>
+            <DataTemplate x:DataType="local:SkillSet">
                 <StackPanel>
-                    <local:SkillHeader />
+                    <local:SkillHeader DataContext="{x:Bind ActiveSummary,Mode=OneWay}" />
                     <Pivot>
                         <PivotItem Header="Overview">
-                            <local:StageOverview Margin="12" DataContext="{Binding ActiveSummary}"/>
+                            <local:StageOverview Margin="12" DataContext="{x:Bind ActiveSummary,Mode=OneWay}"/>
                         </PivotItem>
                         <PivotItem Header="Model"></PivotItem>
                         <PivotItem Header="Beta"></PivotItem>
@@ -60,7 +60,7 @@
             <CommandBar>
                 <AppBarButton 
                     IsEnabled="{x:Bind CurrentSkillSet.HasLiveStage,Mode=OneWay}" 
-                    Click="{x:Bind CurrentSkillSet.SwitchStage}"
+                    Click="{x:Bind SwitchStage, Mode=OneWay}"
                     Label="Switch Stage" 
                     Icon="Switch"/>
             </CommandBar>

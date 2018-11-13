@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Windows.Security.Authentication.Web;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -158,13 +159,33 @@ namespace Alexa.NET.Management.UWPApp
             }
 
             var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            var rawData = settings.Values["tokendata"] as string;
-            CurrentToken = string.IsNullOrWhiteSpace(rawData) ? null : InformationFromString(rawData);
-
-            if (CurrentToken != null)
+            if (settings.Values["tokendate"] != null)
             {
                 ExpiresOn = DateTime.Parse(settings.Values["tokendate"].ToString());
+
+                if (ExpiresOn < DateTime.Now)
+                {
+                    CleanLocal(settings);
+                    return;
+                }
             }
+            else
+            {
+                CleanLocal(settings);
+                return;
+            }
+
+            var rawData = settings.Values["tokendata"] as string;
+            CurrentToken = string.IsNullOrWhiteSpace(rawData) ? null : InformationFromString(rawData);
+            SaveData();
+        }
+
+        private static void CleanLocal(ApplicationDataContainer settings)
+        {
+            settings.Values.Remove("tokendata");
+            settings.Values.Remove("tokendate");
+            ExpiresOn = null;
+            CurrentToken = null;
         }
     }
 }

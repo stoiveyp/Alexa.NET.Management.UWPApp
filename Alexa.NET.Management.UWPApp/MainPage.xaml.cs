@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,21 +55,29 @@ namespace Alexa.NET.Management.UWPApp
 
             var tokenAccess = await AmazonLogin.TokenAuthorizer();
             Api = new ManagementApi(tokenAccess);
-            var vendorResponse = await Api.Vendors.Get();
-
-            var firstVendor = vendorResponse.Vendors.FirstOrDefault();
-            if (firstVendor == null)
+            try
             {
-                return;
-            }
+                var vendorResponse = await Api.Vendors.Get();
 
-            SetVendor(firstVendor);
-            await GetAndSetSkills(firstVendor.Id);
+                var firstVendor = vendorResponse.Vendors.FirstOrDefault();
+                if (firstVendor == null)
+                {
+                    return;
+                }
+
+                SetVendor(firstVendor);
+                await GetAndSetSkills(firstVendor.Id);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         private async Task GetAndSetSkills(string vendorId)
         {
             var skillList = await Api.Skills.List(vendorId);
+
             var skillSets = skillList.Skills.GroupBy(s => s.SkillId).Select(g => new SkillSet(g));
             foreach (var item in skillSets)
             {

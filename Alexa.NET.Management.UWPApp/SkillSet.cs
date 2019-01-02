@@ -1,22 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
-using Windows.UI.Xaml;
 using Alexa.NET.Management.Api;
 using Alexa.NET.Management.Skills;
 using Alexa.NET.Management.UWPApp.Annotations;
+using Alexa.NET.Management.UWPApp.Models;
 
 namespace Alexa.NET.Management.UWPApp
 {
     public class SkillSet:INotifyPropertyChanged
     {
-        public SkillSet(IGrouping<string, SkillSummary> summaryById)
+        public SkillSet(IGrouping<string, SkillSummary> summaryById, ManagementApi api)
         {
             Summaries = summaryById.ToArray();
+            Api = api;
         }
+
+        private ManagementApi Api { get; }
 
         public SkillSummary[] Summaries { get; }
 
@@ -47,7 +49,7 @@ namespace Alexa.NET.Management.UWPApp
         private SkillSummaryViewModel _activeSummary;
         public SkillSummaryViewModel ActiveSummary
         {
-            get { return _activeSummary; }
+            get => _activeSummary;
             private set
             {
                 if (_activeSummary != value)
@@ -72,7 +74,7 @@ namespace Alexa.NET.Management.UWPApp
                 return true;
             }
 
-            ActiveSummary = new SkillSummaryViewModel(newSummary);
+            ActiveSummary = new SkillSummaryViewModel(newSummary,Api);
             //DO STUFF
             return true;
         }

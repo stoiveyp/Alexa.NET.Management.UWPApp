@@ -7,10 +7,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using Alexa.NET.Management.Api;
-using Alexa.NET.Management.Skills;
 using Alexa.NET.Management.UWPApp.Utility;
 using Alexa.NET.Management.Vendors;
-using Microsoft.Toolkit.Uwp.UI.Controls;
 using Newtonsoft.Json;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -22,7 +20,11 @@ namespace Alexa.NET.Management.UWPApp
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private ManagementApi Api { get; set; }
+        private ManagementApi Api
+        {
+            get { return ((App) Application.Current).Api; }
+            set { ((App) Application.Current).Api = value; }
+        }
 
         private JsonSerializer Serializer { get; } = JsonSerializer.CreateDefault(new JsonSerializerSettings
         {
@@ -52,7 +54,6 @@ namespace Alexa.NET.Management.UWPApp
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
             var tokenAccess = await AmazonLogin.TokenAuthorizer();
             Api = new ManagementApi(tokenAccess);
             try
@@ -78,7 +79,7 @@ namespace Alexa.NET.Management.UWPApp
         {
             var skillList = await Api.Skills.List(vendorId);
 
-            var skillSets = skillList.Skills.GroupBy(s => s.SkillId).Select(g => new SkillSet(g));
+            var skillSets = skillList.Skills.GroupBy(s => s.SkillId).Select(g => new SkillSet(g,Api));
             foreach (var item in skillSets)
             {
                 Skills.Add(item);

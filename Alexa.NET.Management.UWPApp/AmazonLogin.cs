@@ -47,7 +47,7 @@ namespace Alexa.NET.Management.UWPApp
             var clientId = Application.Current.Resources["ClientId"].ToString();
             var clientSecret = Application.Current.Resources["ClientSecret"].ToString();
 
-            var requestUri = $"{TokenRequestUrl}?client_id={clientId}&scope={AuthorizationScopes.ReadWriteSkills} {AuthorizationScopes.ReadModels} {AuthorizationScopes.TestingSkills} &response_type=code&state={state:N}&redirect_uri={callbackUri}";
+            var requestUri = $"{TokenRequestUrl}?client_id={clientId}&scope={AuthorizationScopes.ReadWriteSkills} {AuthorizationScopes.ReadWriteModels} {AuthorizationScopes.TestingSkills}&response_type=code&state={state:N}&redirect_uri={callbackUri}";
             var result = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None,new Uri(requestUri, UriKind.Absolute), new Uri(callbackUri, UriKind.Absolute));
             var queryParams = HttpUtility.ParseQueryString(new Uri(result.ResponseData).Query);
 
@@ -165,13 +165,13 @@ namespace Alexa.NET.Management.UWPApp
 
                 if (ExpiresOn < DateTime.Now)
                 {
-                    CleanLocal(settings);
+                    ClearData(settings);
                     return;
                 }
             }
             else
             {
-                CleanLocal(settings);
+                ClearData(settings);
                 return;
             }
 
@@ -180,7 +180,12 @@ namespace Alexa.NET.Management.UWPApp
             SaveData();
         }
 
-        private static void CleanLocal(ApplicationDataContainer settings)
+        public static void ClearData()
+        {
+            ClearData(Windows.Storage.ApplicationData.Current.LocalSettings);
+        }
+
+        public static void ClearData(ApplicationDataContainer settings)
         {
             settings.Values.Remove("tokendata");
             settings.Values.Remove("tokendate");

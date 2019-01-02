@@ -41,7 +41,9 @@
                         <PivotItem Header="Overview">
                             <local:StageOverview Margin="12" DataContext="{x:Bind ActiveSummary,Mode=OneWay}"/>
                         </PivotItem>
-                        <PivotItem Header="Model"></PivotItem>
+                        <PivotItem Header="Model" MaxHeight="400">
+                            <local:StageModel Margin="12" DataContext="{x:Bind ActiveSummary,Mode=OneWay}"/>
+                        </PivotItem>
                         <PivotItem Header="Beta"></PivotItem>
                         <PivotItem Header="Certification"></PivotItem>
                         <PivotItem Header="Products"></PivotItem>

@@ -16,7 +16,16 @@
         </StackPanel>
         <StackPanel Margin="8">
             <TextBlock Text="Export Package" FontWeight="Bold"/>
-            <HyperlinkButton Content="Request"/>
+            <StackPanel Orientation="Horizontal">
+            <HyperlinkButton Padding="0 0 8 0" 
+                IsEnabled="{Binding ExportPackage.ExportEnabled}" 
+                Content="{Binding ExportPackage.ExportStatus}"
+                Click="ExportPackageClick"/>
+
+            <HyperlinkButton Visibility="{Binding ExportPackage.DownloadVisible}" 
+                             Content="{Binding ExportPackage.DownloadStatus}"
+                             Click="DownloadPackageClick"/>
+            </StackPanel>
         </StackPanel>
     </StackPanel>
 </UserControl>

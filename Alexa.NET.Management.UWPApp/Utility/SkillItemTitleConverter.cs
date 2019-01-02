@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Alexa.NET.Management.Skills;
+using Alexa.NET.Management.UWPApp.Models;
 
 namespace Alexa.NET.Management.UWPApp.Utility
 {

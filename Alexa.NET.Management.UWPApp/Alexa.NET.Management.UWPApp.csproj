@@ -100,6 +100,8 @@
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\SkillSummaryExport.cs" />
+    <Compile Include="Models\SkillSummarySettings.cs" />
     <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SkillHeader.xaml.cs">
@@ -107,7 +109,10 @@
     </Compile>
     <Compile Include="SkillSet.cs" />
     <Compile Include="SkillSetOverview.cs" />
-    <Compile Include="SkillSummaryViewModel.cs" />
+    <Compile Include="Models\SkillSummaryViewModel.cs" />
+    <Compile Include="StageModel.xaml.cs">
+      <DependentUpon>StageModel.xaml</DependentUpon>
+    </Compile>
     <Compile Include="StageOverview.xaml.cs">
       <DependentUpon>StageOverview.xaml</DependentUpon>
     </Compile>
@@ -181,6 +186,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="StageModel.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="StageOverview.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -196,11 +205,13 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.2</Version>
     </PackageReference>
+    <PackageReference Include="Refit">
+      <Version>4.6.58</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Reference Include="Alexa.NET.Management, Version=2.6.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\Alexa.NET.Management\Alexa.NET.Management\bin\Debug\netstandard1.6\Alexa.NET.Management.dll</HintPath>
+    <Reference Include="Alexa.NET.Management">
+      <HintPath>..\..\Alexa.NET.Management\Alexa.NET.Management\bin\Debug\netstandard1.6\Alexa.NET.Management.dll</HintPath>
     </Reference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">

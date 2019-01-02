@@ -3,6 +3,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using Windows.System;
 using Windows.UI.Xaml;
 using Alexa.NET.Management.Package;
 using Alexa.NET.Management.UWPApp.Annotations;
@@ -47,12 +48,12 @@ namespace Alexa.NET.Management.UWPApp.Models
             _summary = skillSummaryViewModel;
         }
 
-        public string GetDownload(string key)
+        public async Task GetDownload()
         {
-            var url = _summary.Settings.GetValue<string>("exportPackageUrl");
-            _summary.Settings.RemoveValue("exportPackageUrl");
-            _summary.Settings.RemoveValue("exportPackageId");
-            return url;
+            if (_exportMetadata.Location.IsAbsoluteUri)
+            {
+                await Launcher.LaunchUriAsync(_exportMetadata.Location);
+            }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;

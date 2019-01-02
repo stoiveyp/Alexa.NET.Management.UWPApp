@@ -36,9 +36,10 @@ namespace Alexa.NET.Management.UWPApp
             await summary.ExportPackage.RequestExport();
         }
 
-        private void DownloadPackageClick(object sender, RoutedEventArgs e)
+        private async void DownloadPackageClick(object sender, RoutedEventArgs e)
         {
-            throw new NotImplementedException();
+            var summary = (SkillSummaryViewModel)DataContext;
+            await summary.ExportPackage.GetDownload();
         }
     }
 }

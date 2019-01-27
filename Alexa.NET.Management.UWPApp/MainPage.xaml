@@ -35,20 +35,24 @@
         </toolkit:MasterDetailsView.ItemTemplate>
         <toolkit:MasterDetailsView.DetailsTemplate>
             <DataTemplate x:DataType="local:SkillSet">
-                <StackPanel>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
                     <local:SkillHeader DataContext="{x:Bind ActiveSummary,Mode=OneWay}" />
-                    <Pivot>
+                    <Pivot Grid.Row="1">
                         <PivotItem Header="Overview">
                             <local:StageOverview Margin="12" DataContext="{x:Bind ActiveSummary,Mode=OneWay}"/>
                         </PivotItem>
-                        <PivotItem Header="Model" MaxHeight="400">
+                        <PivotItem Header="Model">
                             <local:StageModel Margin="12" DataContext="{x:Bind ActiveSummary,Mode=OneWay}"/>
                         </PivotItem>
                         <PivotItem Header="Beta"></PivotItem>
                         <PivotItem Header="Certification"></PivotItem>
                         <PivotItem Header="Products"></PivotItem>
                     </Pivot>
-                </StackPanel>
+                </Grid>
             </DataTemplate>
         </toolkit:MasterDetailsView.DetailsTemplate>
         <toolkit:MasterDetailsView.MasterCommandBar>

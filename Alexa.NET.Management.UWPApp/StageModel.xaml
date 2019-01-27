@@ -2,7 +2,6 @@
     x:Class="Alexa.NET.Management.UWPApp.StageModel"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:Alexa.NET.Management.UWPApp"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
@@ -16,9 +15,12 @@
         <StackPanel Margin="4">
             <Button Content="Publish Model" Click="PublishModel"></Button>
         </StackPanel>
-        <TextBox x:Name="Manifest" Grid.Row="1" Margin="12" AcceptsReturn="True" TextWrapping="Wrap"
-                 HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
-                 VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
-                 ></TextBox>
+
+        <ScrollViewer Grid.Row="1" HorizontalScrollMode="Disabled" VerticalScrollMode="Enabled">
+            <TextBox x:Name="Manifest" Margin="12" AcceptsReturn="True" TextWrapping="Wrap"
+                     HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch"
+                     VerticalAlignment="Stretch" VerticalContentAlignment="Stretch"
+            ></TextBox>
+        </ScrollViewer>
     </Grid>
 </UserControl>

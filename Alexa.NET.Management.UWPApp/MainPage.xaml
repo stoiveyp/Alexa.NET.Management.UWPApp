@@ -34,19 +34,25 @@
             </DataTemplate>
         </toolkit:MasterDetailsView.ItemTemplate>
         <toolkit:MasterDetailsView.DetailsTemplate>
-            <DataTemplate>
-                <StackPanel>
-                    <local:SkillHeader />
-                    <Pivot>
+            <DataTemplate x:DataType="local:SkillSet">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <local:SkillHeader DataContext="{x:Bind ActiveSummary,Mode=OneWay}" />
+                    <Pivot Grid.Row="1">
                         <PivotItem Header="Overview">
-                            <local:StageOverview Margin="12" DataContext="{Binding ActiveSummary}"/>
+                            <local:StageOverview Margin="12" DataContext="{x:Bind ActiveSummary,Mode=OneWay}"/>
                         </PivotItem>
-                        <PivotItem Header="Model"></PivotItem>
+                        <PivotItem Header="Model">
+                            <local:StageModel Margin="12" DataContext="{x:Bind ActiveSummary,Mode=OneWay}"/>
+                        </PivotItem>
                         <PivotItem Header="Beta"></PivotItem>
                         <PivotItem Header="Certification"></PivotItem>
                         <PivotItem Header="Products"></PivotItem>
                     </Pivot>
-                </StackPanel>
+                </Grid>
             </DataTemplate>
         </toolkit:MasterDetailsView.DetailsTemplate>
         <toolkit:MasterDetailsView.MasterCommandBar>
@@ -60,7 +66,7 @@
             <CommandBar>
                 <AppBarButton 
                     IsEnabled="{x:Bind CurrentSkillSet.HasLiveStage,Mode=OneWay}" 
-                    Click="{x:Bind CurrentSkillSet.SwitchStage}"
+                    Click="{x:Bind SwitchStage, Mode=OneWay}"
                     Label="Switch Stage" 
                     Icon="Switch"/>
             </CommandBar>

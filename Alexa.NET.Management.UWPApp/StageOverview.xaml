@@ -10,9 +10,22 @@
     d:DesignWidth="400">
 
     <StackPanel>
-<StackPanel Margin="8">
-    <TextBlock Text="Stage" />
-    <TextBlock Text="{Binding Stage}"></TextBlock>
-</StackPanel>
+        <StackPanel Margin="8">
+            <TextBlock Text="Stage" FontWeight="Bold" />
+            <TextBlock Text="{Binding Stage}"></TextBlock>
+        </StackPanel>
+        <StackPanel Margin="8">
+            <TextBlock Text="Export Package" FontWeight="Bold"/>
+            <StackPanel Orientation="Horizontal">
+            <HyperlinkButton Padding="0 0 8 0" 
+                IsEnabled="{Binding ExportPackage.ExportEnabled}" 
+                Content="{Binding ExportPackage.ExportStatus}"
+                Click="ExportPackageClick"/>
+
+            <HyperlinkButton Visibility="{Binding ExportPackage.DownloadVisible}" 
+                             Content="{Binding ExportPackage.DownloadStatus}"
+                             Click="DownloadPackageClick"/>
+            </StackPanel>
+        </StackPanel>
     </StackPanel>
 </UserControl>

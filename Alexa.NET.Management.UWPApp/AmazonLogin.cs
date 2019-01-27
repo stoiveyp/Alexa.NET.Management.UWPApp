@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Web;
 using Windows.Security.Authentication.Web;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -46,7 +47,7 @@ namespace Alexa.NET.Management.UWPApp
             var clientId = Application.Current.Resources["ClientId"].ToString();
             var clientSecret = Application.Current.Resources["ClientSecret"].ToString();
 
-            var requestUri = $"{TokenRequestUrl}?client_id={clientId}&scope={AuthorizationScopes.ReadWriteSkills} {AuthorizationScopes.ReadModels} {AuthorizationScopes.TestingSkills} &response_type=code&state={state:N}&redirect_uri={callbackUri}";
+            var requestUri = $"{TokenRequestUrl}?client_id={clientId}&scope={AuthorizationScopes.ReadWriteSkills} {AuthorizationScopes.ReadWriteModels} {AuthorizationScopes.TestingSkills}&response_type=code&state={state:N}&redirect_uri={callbackUri}";
             var result = await WebAuthenticationBroker.AuthenticateAsync(WebAuthenticationOptions.None,new Uri(requestUri, UriKind.Absolute), new Uri(callbackUri, UriKind.Absolute));
             var queryParams = HttpUtility.ParseQueryString(new Uri(result.ResponseData).Query);
 
@@ -158,13 +159,38 @@ namespace Alexa.NET.Management.UWPApp
             }
 
             var settings = Windows.Storage.ApplicationData.Current.LocalSettings;
-            var rawData = settings.Values["tokendata"] as string;
-            CurrentToken = string.IsNullOrWhiteSpace(rawData) ? null : InformationFromString(rawData);
-
-            if (CurrentToken != null)
+            if (settings.Values["tokendate"] != null)
             {
                 ExpiresOn = DateTime.Parse(settings.Values["tokendate"].ToString());
+
+                if (ExpiresOn < DateTime.Now)
+                {
+                    ClearData(settings);
+                    return;
+                }
             }
+            else
+            {
+                ClearData(settings);
+                return;
+            }
+
+            var rawData = settings.Values["tokendata"] as string;
+            CurrentToken = string.IsNullOrWhiteSpace(rawData) ? null : InformationFromString(rawData);
+            SaveData();
+        }
+
+        public static void ClearData()
+        {
+            ClearData(Windows.Storage.ApplicationData.Current.LocalSettings);
+        }
+
+        public static void ClearData(ApplicationDataContainer settings)
+        {
+            settings.Values.Remove("tokendata");
+            settings.Values.Remove("tokendate");
+            ExpiresOn = null;
+            CurrentToken = null;
         }
     }
 }

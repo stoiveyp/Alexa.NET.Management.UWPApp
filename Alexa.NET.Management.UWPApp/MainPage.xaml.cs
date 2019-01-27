@@ -1,14 +1,14 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Alexa.NET.Management.Skills;
+using Alexa.NET.Management.Api;
 using Alexa.NET.Management.UWPApp.Utility;
 using Alexa.NET.Management.Vendors;
-using Microsoft.Toolkit.Uwp.UI.Controls;
 using Newtonsoft.Json;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
@@ -20,7 +20,11 @@ namespace Alexa.NET.Management.UWPApp
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private ManagementApi Api { get; set; }
+        private ManagementApi Api
+        {
+            get { return ((App) Application.Current).Api; }
+            set { ((App) Application.Current).Api = value; }
+        }
 
         private JsonSerializer Serializer { get; } = JsonSerializer.CreateDefault(new JsonSerializerSettings
         {
@@ -50,25 +54,32 @@ namespace Alexa.NET.Management.UWPApp
         protected override async void OnNavigatedTo(NavigationEventArgs e)
         {
             base.OnNavigatedTo(e);
-
             var tokenAccess = await AmazonLogin.TokenAuthorizer();
             Api = new ManagementApi(tokenAccess);
-            var vendorResponse = await Api.Vendors.Get();
-
-            var firstVendor = vendorResponse.Vendors.FirstOrDefault();
-            if (firstVendor == null)
+            try
             {
-                return;
-            }
+                var vendorResponse = await Api.Vendors.Get();
 
-            SetVendor(firstVendor);
-            await GetAndSetSkills(firstVendor.Id);
+                var firstVendor = vendorResponse.Vendors.FirstOrDefault();
+                if (firstVendor == null)
+                {
+                    return;
+                }
+
+                SetVendor(firstVendor);
+                await GetAndSetSkills(firstVendor.Id);
+            }
+            catch (Exception ex)
+            {
+
+            }
         }
 
         private async Task GetAndSetSkills(string vendorId)
         {
             var skillList = await Api.Skills.List(vendorId);
-            var skillSets = skillList.Skills.GroupBy(s => s.SkillId).Select(g => new SkillSet(g));
+
+            var skillSets = skillList.Skills.GroupBy(s => s.SkillId).Select(g => new SkillSet(g,Api));
             foreach (var item in skillSets)
             {
                 Skills.Add(item);
@@ -81,20 +92,22 @@ namespace Alexa.NET.Management.UWPApp
             VendorName.Tag = vendor.Id;
         }
 
-        private void MasterDetails_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void MasterDetails_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (e.AddedItems.Any())
+            if (!e.AddedItems.Any())
             {
-                CurrentSkillSet = e.AddedItems.Cast<SkillSet>().First();
+                return;
             }
+
+            var set = e.AddedItems.Cast<SkillSet>().First();
+            CurrentSkillSet = set;
+            await set.UpdateStage(SkillStage.DEVELOPMENT);
         }
 
-        //var skill = await Api.Skills.Get(summary.SkillId, summary.CurrentStage);
-        //if (!currentSet.UpdateStage(StageSwitch.IsOn
-        //    ? StageSwitch.OnContent.ToString()
-        //    : StageSwitch.OffContent.ToString()))
-        //{
-        //    StageSwitch.IsOn = !StageSwitch.IsOn;
-        //}
+        public async void SwitchStage(object sender, RoutedEventArgs e)
+        {
+            var newStage = CurrentSkillSet.ActiveSummary.Stage == SkillStage.DEVELOPMENT ? SkillStage.LIVE : SkillStage.DEVELOPMENT;
+            await CurrentSkillSet.UpdateStage(newStage);
+        }
     }
 }

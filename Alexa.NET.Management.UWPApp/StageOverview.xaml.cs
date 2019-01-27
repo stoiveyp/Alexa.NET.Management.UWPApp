@@ -1,17 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
+using Alexa.NET.Management.UWPApp.Models;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -21,7 +12,34 @@ namespace Alexa.NET.Management.UWPApp
     {
         public StageOverview()
         {
+            this.DataContextChanged += OnDataContextChanged;
             this.InitializeComponent();
+        }
+
+        private async void OnDataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+        {
+            if (args.NewValue != null)
+            {
+                var summary = ((SkillSummaryViewModel) DataContext);
+                await UpdateSkill(summary);
+            }
+        }
+
+        private async Task UpdateSkill(SkillSummaryViewModel summary)
+        {
+            await summary.ExportPackage.Update();
+        }
+
+        private async void ExportPackageClick(object sender, RoutedEventArgs e)
+        {
+            var summary = (SkillSummaryViewModel)DataContext;
+            await summary.ExportPackage.RequestExport();
+        }
+
+        private async void DownloadPackageClick(object sender, RoutedEventArgs e)
+        {
+            var summary = (SkillSummaryViewModel)DataContext;
+            await summary.ExportPackage.GetDownload();
         }
     }
 }

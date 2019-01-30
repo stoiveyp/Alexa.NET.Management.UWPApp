@@ -38,8 +38,14 @@ namespace Alexa.NET.Management.UWPApp.Models
         }
 
         private SkillSummaryExport _export;
-
         public SkillSummaryExport ExportPackage => _export ?? (_export = new SkillSummaryExport(this));
+
+        public SkillSummaryCertification Certification =>
+            _certification ?? (_certification = new SkillSummaryCertification(this));
+
         public SkillSummarySettings Settings { get; set; }
+
+        private SkillSummaryCertification _certification;
+
     }
 }

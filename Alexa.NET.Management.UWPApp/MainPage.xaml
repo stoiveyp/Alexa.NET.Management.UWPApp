@@ -49,7 +49,9 @@
                             <local:StageModel Margin="12" DataContext="{x:Bind ActiveSummary,Mode=OneWay}"/>
                         </PivotItem>
                         <PivotItem Header="Beta"></PivotItem>
-                        <PivotItem Header="Certification"></PivotItem>
+                        <PivotItem Header="Certification">
+                            <local:CertificationList Margin="12" DataContext="{x:Bind ActiveSummary, Mode=OneWay}"/>
+                        </PivotItem>
                         <PivotItem Header="Products"></PivotItem>
                     </Pivot>
                 </Grid>

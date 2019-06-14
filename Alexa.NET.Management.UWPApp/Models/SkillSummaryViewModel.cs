@@ -18,13 +18,13 @@ namespace Alexa.NET.Management.UWPApp.Models
 
         public async Task<Skill> GetSkill()
         {
-            var status = await Api.InteractionModel.Get(SkillId, Stage.ToString().ToLower(), "en-GB");
-            return await Api.Skills.Get(SkillId, Stage.ToString().ToLower());
+            var status = await Api.InteractionModel.Get(SkillId, Stage, "en-GB");
+            return await Api.Skills.Get(SkillId, Stage);
         }
 
         public Task<SkillId> SetSkill(Skill skill)
         {
-            return Api.Skills.Update(SkillId, Stage.ToString(), skill);
+            return Api.Skills.Update(SkillId, Stage, skill);
         }
 
         public SkillSummary SkillSummary { get; }

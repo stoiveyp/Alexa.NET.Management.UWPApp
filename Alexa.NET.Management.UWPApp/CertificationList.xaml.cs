@@ -1,9 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Alexa.NET.Management.Skills;
 using Alexa.NET.Management.UWPApp.Models;
 using Newtonsoft.Json;
+using System;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -17,8 +19,6 @@ namespace Alexa.NET.Management.UWPApp
             this.DataContextChanged += CertificationList_DataContextChanged;
         }
 
-        public CertificationSummary[] Certification { get; set; }
-
         private async void CertificationList_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
         {
             if (args.NewValue == null)
@@ -27,7 +27,14 @@ namespace Alexa.NET.Management.UWPApp
             }
 
             var summary = args.NewValue as SkillSummaryViewModel;
-            await summary.Certification.UpdateList();
+            try
+            {
+                await summary.Certification.UpdateList();
+            }
+            catch (Exception)
+            {
+
+            }
         }
     }
 }

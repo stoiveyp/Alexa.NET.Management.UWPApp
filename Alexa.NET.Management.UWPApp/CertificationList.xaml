@@ -23,7 +23,7 @@
             <ItemsControl ItemsSource="{Binding Certification.Summaries}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal" Background="Green">
+                        <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding SubmissionTimestamp}" Margin="4"/>
                             <TextBlock Text="{Binding Status}" Margin="4"/>
                         </StackPanel>

@@ -22,7 +22,7 @@ namespace Alexa.NET.Management.UWPApp
 
         public SkillSummary[] Summaries { get; }
 
-        public bool HasLiveStage => Summaries.Any(s => s.Stage == SkillStage.LIVE);
+        public bool HasLiveStage => Summaries.Any(s => s.Stage == SkillStage.Live);
 
         public string ApiTypes => string.Join(",", Summaries.SelectMany(s => s.Apis).Distinct());
 

@@ -16,9 +16,10 @@ namespace Alexa.NET.Management.UWPApp.Models
 
         public ManagementApi Api { get; }
 
-        public Task<Skill> GetSkill()
+        public async Task<Skill> GetSkill()
         {
-            return Api.Skills.Get(SkillId, Stage.ToString().ToLower());
+            var status = await Api.InteractionModel.Get(SkillId, Stage.ToString().ToLower(), "en-GB");
+            return await Api.Skills.Get(SkillId, Stage.ToString().ToLower());
         }
 
         public Task<SkillId> SetSkill(Skill skill)
@@ -37,9 +38,15 @@ namespace Alexa.NET.Management.UWPApp.Models
             return SkillSet.GetTitle(new[] { SkillSummary }, locale);
         }
 
-        private SkillSummaryExport _export;
-
         public SkillSummaryExport ExportPackage => _export ?? (_export = new SkillSummaryExport(this));
+
+        public SkillSummaryCertification Certification => _certification ?? (_certification = new SkillSummaryCertification(this));
+
+        public SkillSummaryBeta Beta => _beta ?? (_beta = new SkillSummaryBeta(this));
+
         public SkillSummarySettings Settings { get; set; }
+        private SkillSummaryCertification _certification;
+        private SkillSummaryExport _export;
+        private SkillSummaryBeta _beta;
     }
 }

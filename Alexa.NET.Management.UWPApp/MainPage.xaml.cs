@@ -101,12 +101,12 @@ namespace Alexa.NET.Management.UWPApp
 
             var set = e.AddedItems.Cast<SkillSet>().First();
             CurrentSkillSet = set;
-            await set.UpdateStage(SkillStage.DEVELOPMENT);
+            await set.UpdateStage(SkillStage.Development);
         }
 
         public async void SwitchStage(object sender, RoutedEventArgs e)
         {
-            var newStage = CurrentSkillSet.ActiveSummary.Stage == SkillStage.DEVELOPMENT ? SkillStage.LIVE : SkillStage.DEVELOPMENT;
+            var newStage = CurrentSkillSet.ActiveSummary.Stage == SkillStage.Development ? SkillStage.Live : SkillStage.Development;
             await CurrentSkillSet.UpdateStage(newStage);
         }
     }
